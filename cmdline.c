@@ -181,9 +181,9 @@ static void terminate_receive_buffer(struct cmdline_t* cmdline)
     uint16_t receive_char_index  = cmdline->receive_char_index;
     uint16_t receive_buffer_size = cmdline->config.receive_buffer_size;
     char*    receive_buffer      = cmdline->config.receive_buffer;
-    bool (*tx_char)(char)        = cmdline->config.tx_char;
 
-    for (int i = receive_char_index; i < receive_buffer_size; i++)
+    int i;
+    for (i = receive_char_index; i < receive_buffer_size; i++)
     {
         receive_buffer[i] = 0;
     }
@@ -194,7 +194,6 @@ static void terminate_receive_buffer(struct cmdline_t* cmdline)
 static void remove_last_entry_character_data(struct cmdline_t* cmdline)
 {
     char* receive_buffer  = cmdline->config.receive_buffer;
-    bool (*tx_char)(char) = cmdline->config.tx_char;
 
     if (cmdline->receive_char_index == 0)
     {
@@ -208,7 +207,6 @@ static void remove_last_entry_character_data(struct cmdline_t* cmdline)
 static void add_received_byte_to_serial_msg(struct cmdline_t* cmdline, char byte)
 {
     char* receive_buffer  = cmdline->config.receive_buffer;
-    bool (*tx_char)(char) = cmdline->config.tx_char;
 
     receive_buffer[cmdline->receive_char_index] = byte;
     cmdline->receive_char_index++;
@@ -218,7 +216,8 @@ static uint8_t get_argc_count_from_cmd_msg(struct cmdline_t* cmdline)
 {
     char*   receive_buffer = cmdline->config.receive_buffer;
     uint8_t argc_counter   = 0;
-    for (int i = 0; i < cmdline->receive_char_index; i++)
+    int i;
+    for (i = 0; i < cmdline->receive_char_index; i++)
     {
         if (is_argc_start_found(cmdline, i))
         {
